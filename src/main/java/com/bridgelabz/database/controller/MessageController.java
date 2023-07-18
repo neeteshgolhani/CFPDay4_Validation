@@ -4,9 +4,11 @@ import com.bridgelabz.database.DTO.ResponseDTO;
 import com.bridgelabz.database.Repository.MessageRepo;
 import com.bridgelabz.database.model.Message;
 import com.bridgelabz.database.service.MessageService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -17,13 +19,14 @@ import java.util.Optional;
 *
 * */
 @RestController
+@Validated
 public class MessageController {
     @Autowired
     private MessageRepo messageRepo;
     @Autowired
     private MessageService messageService;
     @PostMapping("/add")
-    public ResponseEntity<ResponseDTO> addMessage(@RequestBody MessageDTO messageDTO) {
+    public ResponseEntity<ResponseDTO> addMessage(@Valid @RequestBody MessageDTO messageDTO) {
         ResponseDTO responseDTO = new ResponseDTO( "data added successfully", messageService.addMessage(messageDTO));
         return  new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
@@ -38,7 +41,7 @@ public class MessageController {
         return new ResponseEntity<>(responseDTO,HttpStatus.OK);
     }
     @PutMapping("/update/{id}")
-   public ResponseEntity<ResponseDTO> updateMessage(@PathVariable int id, @RequestBody MessageDTO messageDTO) {
+   public ResponseEntity<ResponseDTO> updateMessage(@Valid @PathVariable int id, @RequestBody MessageDTO messageDTO) {
         ResponseDTO responseDTO = new ResponseDTO("data updated",messageService.updateMessage(id, messageDTO));
         return  new ResponseEntity<>(responseDTO,HttpStatus.OK);
     }
