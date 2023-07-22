@@ -32,6 +32,7 @@ public class MessageController {
     }
     @GetMapping("/getAll")
     public List<Message> getAllMessages() {
+
         return messageService.getAllMessages();
     }
     @GetMapping("/getbyid/{id}")

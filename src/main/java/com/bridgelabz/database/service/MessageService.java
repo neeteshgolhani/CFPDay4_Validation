@@ -1,8 +1,10 @@
 package com.bridgelabz.database.service;
 import com.bridgelabz.database.DTO.MessageDTO;
+import com.bridgelabz.database.Exception.CostumException;
 import com.bridgelabz.database.Repository.MessageRepo;
 import com.bridgelabz.database.model.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +36,8 @@ public class MessageService {
      *
      */
     public Optional<Message> getById(int id){
-        return messageRepo.findById(id);
+
+        return Optional.ofNullable(messageRepo.findById(id).orElseThrow(() -> new CostumException("message with id :" + id + " is not present")));
     }
     /**UC6---------------
      * Ability for the Greeting
@@ -58,11 +61,18 @@ public class MessageService {
  Repository
  * */
     public Message updateMessage(int id, MessageDTO messageDTO) {
-        Optional<Message> messageData = getById(id);
-        if(messageData.isPresent()){
-            messageData.get().updateMessage(messageDTO);
-            return messageRepo.save(messageData.get());
+        Message messageData = getById(id).get();
+            messageData.updateMessage(messageDTO);
+            return messageRepo.save(messageData);
+
+    }
+    public ResponseEntity<String> deleteMessage(int id) {
+        if (messageRepo.existsById(id)) {
+            messageRepo.deleteById(id);
+
+            return ResponseEntity.ok("Task Deleted Successfully");
         }
         return null;
     }
+
 }
